@@ -1,7 +1,8 @@
 #include "ecs/entity_manager.hpp"
 #include "ecs/ecs_constants.hpp"
-#include "result.hpp"
 #include "ids.hpp"
+#include "result.hpp"
+
 
 Result<EntityID> EntityManager::CreateEntity()
 {

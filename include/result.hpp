@@ -2,6 +2,7 @@
 #define INCLUDE_RESULT_H_
 
 #include <cassert>
+#include <concepts>
 #include <initializer_list>
 #include <type_traits>
 
