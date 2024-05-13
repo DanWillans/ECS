@@ -1,0 +1,9 @@
+
+add_executable(ecs_controller_tests main.cpp ecs_controller_tests.cpp)
+target_link_libraries(ecs_controller_tests ECS)
+add_executable(entity_manager_tests main.cpp entity_manager_tests.cpp)
+target_link_libraries(entity_manager_tests ECS)
+add_executable(system_manager_tests main.cpp system_manager_tests.cpp)
+target_link_libraries(system_manager_tests ECS)
+add_executable(component_manager_tests main.cpp component_manager_tests.cpp)
+target_link_libraries(component_manager_tests ECS)

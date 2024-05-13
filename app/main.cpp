@@ -27,16 +27,16 @@ public:
   void Iterate()
   {
     for (const auto& entity : entities) {
-      auto animal_component = component_manager->GetComponent(entity, animal_comp_id_);
-      auto animal_food_component = component_manager->GetComponent(entity, animal_food_id_);
-      printf("---------\n");
-      printf("Dog: %d\n", animal_component.dog);
-      printf("Cat: %d\n", animal_component.cat);
-      printf("Fish: %d\n", animal_component.fish);
-      printf("Dog Food: %f\n", animal_food_component.dog_food);
-      printf("Cat Food: %f\n", animal_food_component.cat_food);
-      printf("Fish Food: %f\n", animal_food_component.fish_food);
-      printf("---------\n");
+      // auto animal_component = component_manager->GetComponent(entity, animal_comp_id_);
+      // auto animal_food_component = component_manager->GetComponent(entity, animal_food_id_);
+      // printf("---------\n");
+      // printf("Dog: %d\n", animal_component.dog);
+      // printf("Cat: %d\n", animal_component.cat);
+      // printf("Fish: %d\n", animal_component.fish);
+      // printf("Dog Food: %f\n", animal_food_component.dog_food);
+      // printf("Cat Food: %f\n", animal_food_component.cat_food);
+      // printf("Fish Food: %f\n", animal_food_component.fish_food);
+      // printf("---------\n");
     }
   }
 

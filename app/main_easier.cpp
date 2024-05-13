@@ -1,5 +1,4 @@
 #include "ecs/ecs_controller.hpp"
-#include "ecs/system_manager.hpp"
 #include "ids.hpp"
 
 struct Animals
@@ -23,11 +22,11 @@ public:
     : animal_comp_id_(animal_comp_id), animal_food_id_(animal_food_id)
   {}
 
-  void Iterate() const
+  void Iterate()
   {
-    for (const auto& entity : entities) {
-      auto animal_component = component_manager->GetComponent(entity, animal_comp_id_);
-      auto animal_food_component = component_manager->GetComponent(entity, animal_food_id_);
+    for(auto& [_, entity] : entities){
+      auto& animal_component = entity.GetComponent(animal_comp_id_);
+      auto& animal_food_component = entity.GetComponent(animal_food_id_);
       printf("---------\n");
       printf("Dog: %d\n", animal_component.dog);
       printf("Cat: %d\n", animal_component.cat);
@@ -101,7 +100,7 @@ int main(int argc, const char** argv)
   err = entity_id_2->AddComponent(animal_food_component_id, animal_food);
 
   // Get system and update it
-  const auto& animal_system = ecs_controller.GetSystem(animal_system_id);
+  auto& animal_system = ecs_controller.GetSystem(animal_system_id);
   printf("\nITERATE\n");
   animal_system.Iterate();
   printf("-----------------------------------\n");

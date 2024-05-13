@@ -6,6 +6,8 @@
 #include <initializer_list>
 #include <type_traits>
 
+#include "error.hpp"
+
 #define assertm(exp, msg) assert(((void)msg, exp))
 
 template<typename ResultType, typename ErrorType>
@@ -36,7 +38,7 @@ concept exclude_error_type = (sizeof...(Args) != 1 && std::constructible_from<Er
 
 // A Result class similar to Optional that can return ResultType or an
 // ErrorType.
-template<typename ResultType, typename ErrorType = const char*> class Result
+template<typename ResultType, typename ErrorType = Error> class Result
 {
 public:
   // ----------------------------------------

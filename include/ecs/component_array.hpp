@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "ankerl/unordered_dense.h"
 
 #include "ids.hpp"
 
@@ -31,25 +32,24 @@ public:
   ComponentArray(const ComponentArray&) = default;
   ComponentArray& operator=(ComponentArray&&) = default;
   ComponentArray& operator=(const ComponentArray&) = default;
+
   void AddComponent(EntityID entity_id, const T& component)
   {
-    // Check if there are any free slots in the components_ vector we can use
-    // first.
+    // // Check if there are any free slots in the components_ vector we can use
+    // // first.
     if (!free_slots_.empty()) {
-      // There is a free slot, let's use it instead of allocating more space
-      // into the components_ vector.
+    //   // There is a free slot, let's use it instead of allocating more space
+    //   // into the components_ vector.
       const auto& index = free_slots_.front();
-      auto& array_component = components_[index];
-      // Update the entity position map before we overwrite the component
+      components_[index] = component;
+    //   // Update the entity position map before we overwrite the component
       entity_index_map_[entity_id] = index;
-      // Update the component
-      array_component.component = component;
-      array_component.entity_id = entity_id;
-      array_component.dirty = false;
-      // Pop now we're not using the references from the front of the queue
+    //   // Update the component
+      // array_component.component = component;
+    //   // Pop now we're not using the references from the front of the queue
       free_slots_.pop();
     } else {
-      components_.emplace_back(component, entity_id);
+      components_.push_back(component);
       entity_index_map_[entity_id] = components_.size() - 1;
     }
   }
@@ -59,31 +59,26 @@ public:
     auto entity_it = entity_index_map_.find(entity_id);
     if (entity_it != entity_index_map_.end()) {
       // Invalidate the component in the vector.
-      components_[entity_it->second].dirty = true;
+      // components_[entity_it->second].dirty = true;
       free_slots_.push(entity_it->second);
       // Remove the component from the entity map.
       entity_index_map_.erase(entity_id);
-    } else {
-      printf("EntityID: %I64d - doesn't exist for component id: %zd", entity_id.Get(), id_.Get());
     }
   }
 
   [[nodiscard]] size_t Size() const { return components_.size() - free_slots_.size(); }
 
-  T& GetComponent(EntityID entity_id) { return components_[entity_index_map_[entity_id]].component; }
+  T& GetComponent(EntityID entity_id) { return components_[entity_index_map_[entity_id]]; }
+
+  typename std::vector<T>::iterator GetIterator(){
+    return components_.begin();
+  }
 
   ~ComponentArray<T>() override = default;
 
 private:
-  // This unordered_map will map entities to component indexes in the
-  // components_ vector. This map should only be used for inserting and deleting
-  // entities from components.
-  std::unordered_map<EntityID, size_t> entity_index_map_;
-
-  // This vector will hold our component entries. Not all components entries are
-  // valid. When iterating over the components it is necessary to check the
-  // dirty flag in the ComponentWrapper.
-  std::vector<ComponentWrapper<T>> components_;
+  ankerl::unordered_dense::map<EntityID, size_t> entity_index_map_;
+  std::vector<T> components_;
 
   // Track free slots in the components_ vector.
   std::queue<size_t> free_slots_;

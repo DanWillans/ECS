@@ -2,13 +2,13 @@
 #define INCLUDE_COMPONENT_MANAGER_H_
 
 #include <array>
+#include <cstddef>
 #include <memory>
 
 #include "ecs/component_array.hpp"
 #include "ecs/ecs_constants.hpp"
 #include "error.hpp"
 #include "ids.hpp"
-#include "result.hpp"
 
 class ComponentManager
 {
@@ -54,6 +54,18 @@ public:
   {
     auto* comp_array = static_cast<ComponentArray<ComponentName>*>(components_[component_id.Get()].get());
     return comp_array->GetComponent(entity_id);
+  }
+
+  template<typename ComponentName>
+  size_t GetComponentCount(ComponentID<ComponentName> component_id){
+    auto* comp_array = static_cast<ComponentArray<ComponentName>*>(components_[component_id.Get()].get());
+    return comp_array->Size();
+  }
+
+  template<typename ComponentName>
+  typename std::vector<ComponentName>::iterator GetIterator(ComponentID<ComponentName> component_id){
+    auto* comp_array = static_cast<ComponentArray<ComponentName>*>(components_[component_id.Get()].get());
+    return comp_array->GetIterator();
   }
 
 private:
