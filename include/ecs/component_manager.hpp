@@ -10,6 +10,9 @@
 #include "error.hpp"
 #include "ids.hpp"
 
+// template<typename ComponentName>
+// using ComponentIterator = std::vector<ComponentName>::iterator;
+
 class ComponentManager
 {
 public:
@@ -60,12 +63,6 @@ public:
   size_t GetComponentCount(ComponentID<ComponentName> component_id){
     auto* comp_array = static_cast<ComponentArray<ComponentName>*>(components_[component_id.Get()].get());
     return comp_array->Size();
-  }
-
-  template<typename ComponentName>
-  typename std::vector<ComponentName>::iterator GetIterator(ComponentID<ComponentName> component_id){
-    auto* comp_array = static_cast<ComponentArray<ComponentName>*>(components_[component_id.Get()].get());
-    return comp_array->GetIterator();
   }
 
 private:

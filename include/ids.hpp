@@ -26,7 +26,7 @@ public:
 struct EntityTag
 {
 };
-using EntityID = ID<uint64_t, EntityTag>;
+using EntityID = ID<size_t, EntityTag>;
 
 template<typename ComponentName> using ComponentID = ID<size_t, ComponentName>;
 
@@ -38,14 +38,5 @@ template<typename T, typename Tag> struct hash<ID<T, Tag>>
   T operator()(const ID<T, Tag>& id) const noexcept { return id.Get(); }
 };
 }// namespace std
-
-template <typename T, typename Tag>
-struct ankerl::unordered_dense::hash<ID<T, Tag>> {
-    using is_avalanching = void;
-
-    [[nodiscard]] auto operator()(ID<T, Tag> const& x) const noexcept -> T {
-        return detail::wyhash::hash(x.Get());
-    }
-};
 
 #endif

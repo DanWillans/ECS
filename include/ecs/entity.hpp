@@ -1,6 +1,7 @@
 #ifndef INCLUDE_ECS_ENTITY_HPP_
 #define INCLUDE_ECS_ENTITY_HPP_
 
+#include "ecs/component_array.hpp"
 #include "ecs/entity_manager.hpp"
 #include "ecs/component_manager.hpp"
 #include "ecs/system_manager_interface.hpp"
@@ -44,12 +45,6 @@ public:
     return component_manager_->GetComponent(id_, component_id);
   }
 
-  template<typename ComponentName>
-  typename std::vector<ComponentName>::iterator GetComponentIterator(ComponentID<ComponentName> component_id) const
-  {
-    return component_manager_->GetIterator(component_id);
-  }
-
   void Destroy()
   {
     component_manager_->EntityDestroyed(id_);
@@ -82,11 +77,18 @@ private:
   EntityManager* entity_manager_;
 };
 
+namespace std {
+template<> struct hash<Entity>
+{
+  uint64_t operator()(const Entity& id) const noexcept { return id.GetID().Get(); }
+};
+}// namespace std
+
 template <>
 struct ankerl::unordered_dense::hash<Entity> {
     using is_avalanching = void;
 
-    [[nodiscard]] auto operator()(Entity const& x) const noexcept -> size_t {
+    [[nodiscard]] auto operator()(Entity const& x) const noexcept -> uint64_t {
         return detail::wyhash::hash(x.GetID().Get());
     }
 };

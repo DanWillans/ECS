@@ -14,8 +14,8 @@ public:
   [[nodiscard]] uint64_t EntityCount() const;
 
 private:
-  uint64_t entity_count_{ 0 };
-  std::queue<uint64_t> free_slots_;
+  size_t entity_count_{ 0 };
+  std::queue<size_t> free_slots_;
 };
 
 #endif
