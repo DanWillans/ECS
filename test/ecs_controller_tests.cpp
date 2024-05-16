@@ -84,12 +84,16 @@ TEST_CASE("Test ECS Controller")
   REQUIRE_EQ(sys_3.entities.size(), 1);
 
   // Remove components on entities
+  printf("blah");
   err = entity_1->RemoveComponent(test_comp_id_2);
+  printf("blah");
   REQUIRE(err);
   err = entity_1->RemoveComponent(test_comp_id_3);
+  printf("blah");
   REQUIRE(err);
   err = entity_3->RemoveComponent(test_comp_id_3);
   REQUIRE(err);
+  printf("blah");
 
   // Check systems have correct entities again
   REQUIRE_EQ(sys_1.entities.size(), 1);
@@ -99,18 +103,23 @@ TEST_CASE("Test ECS Controller")
   REQUIRE_EQ(ecs.EntityCount(), 3);
 
   // Destroy entity
+  printf("blah\n");
   entity_1->Destroy();
+  printf("blah");
 
   // Check systems have correct entities again
   REQUIRE_EQ(sys_1.entities.size(), 1);
   REQUIRE_EQ(sys_2.entities.size(), 2);
   REQUIRE_EQ(sys_3.entities.size(), 0);
 
+  printf("blah");
   REQUIRE_EQ(ecs.EntityCount(), 2);
 
+  printf("blah");
   // Destroy entity
   entity_2->Destroy();
 
+  printf("blah");
   // Check systems have correct entities again
   REQUIRE_EQ(sys_1.entities.size(), 0);
   REQUIRE_EQ(sys_2.entities.size(), 1);
@@ -119,8 +128,10 @@ TEST_CASE("Test ECS Controller")
   REQUIRE_EQ(ecs.EntityCount(), 1);
 
   // Destroy entity
+  printf("blah");
   entity_3->Destroy();
 
+  printf("blah");
   // Check systems have correct entities again
   REQUIRE_EQ(sys_1.entities.size(), 0);
   REQUIRE_EQ(sys_2.entities.size(), 0);

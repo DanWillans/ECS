@@ -2,22 +2,21 @@
 #define INCLUDE_ECS_CONTROLLER_H_
 
 #include "ecs/component_manager.hpp"
+#include "ecs/entity.hpp"
 #include "ecs/entity_manager.hpp"
 #include "ecs/system_manager.hpp"
-#include "ecs/entity.hpp"
 #include "ids.hpp"
 #include "result.hpp"
 
-#include <memory>
 
+#include <memory>
 
 
 class ECSController
 {
 public:
   ECSController()
-    : component_manager_(std::make_unique<ComponentManager>()),
-      entity_manager_(std::make_unique<EntityManager>()),
+    : component_manager_(std::make_unique<ComponentManager>()), entity_manager_(std::make_unique<EntityManager>()),
       system_manager_(std::make_unique<SystemManager>(component_manager_.get(), entity_manager_.get()))
   {}
 
@@ -47,6 +46,12 @@ public:
   }
 
   [[nodiscard]] uint64_t EntityCount() const { return entity_manager_->EntityCount(); }
+
+  template<typename ComponentName>
+  [[nodiscard]] size_t ComponentCount(ComponentID<ComponentName> id) const
+  {
+    return component_manager_->GetComponentCount(id);
+  }
 
 private:
   // Create these all on the heap because they could be quite large

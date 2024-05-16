@@ -6,7 +6,7 @@
 
 Result<EntityID> EntityManager::CreateEntity()
 {
-  if (entity_count_ == MAX_ENTITY_COUNT && free_slots_.empty()) {
+  if (entity_count_ == MAX_ENTITY_COUNT + 1 && free_slots_.empty()) {
     return "Max entity count reached, cannot create anymore entities";
   }
   // Check if there are any free entity slots to use first
