@@ -1,0 +1,3 @@
+add_executable(ecs_test_app main_easier_perf_tests.cpp)
+
+target_link_libraries(ecs_test_app ECS)
