@@ -20,8 +20,8 @@
 class System
 {
 public:
-  // ankerl::unordered_dense::set<Entity> entities;
-  std::unordered_set<Entity> entities;
+  ankerl::unordered_dense::set<Entity> entities;
+  // std::unordered_set<Entity> entities;
   SystemSignature signature;
 };
 

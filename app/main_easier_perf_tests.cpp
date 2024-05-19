@@ -24,8 +24,9 @@
 //  - Insertion time
 //  - Deletion time
 //  - Entity destroy time
-//  - ...
-// We're nottrying to create a world class ECS here. We're purely trying to have fun and write our own to see where the
+//  - ......
+//  - Fragmentation tests
+// We're not trying to create a world class ECS here. We're purely trying to have fun and write our own to see where the
 // downfalls are and most importantly understand how to improve performance.
 
 namespace {
@@ -204,7 +205,7 @@ public:
     }
   }
 
-  void Iterate(bool print = false)
+  void Iterate()
   {
     for (auto& entity : entities) {
       auto& animal_component = entity.GetComponent(animal_comp_id_);
@@ -365,7 +366,6 @@ int main(int argc, const char** argv)
   printf(
     "\n-----------------------------------------------------------------------------------------------------------\n");
 
-  printf("%llu count\n", ecs_controller.ComponentCount(animal_food_component_id));
   // Delete entities in all three solutions
   for (size_t i = 0; i < entity_count; ++i) {
     int num = roll(0, 10);
@@ -380,12 +380,11 @@ int main(int argc, const char** argv)
     }
   }
 
-  printf("%llu count\n", ecs_controller.ComponentCount(animal_food_component_id));
   // ========= Our ECS =========
   Timer timer_5("Our ECS");
   for (int i = 0; i < iteration_count; i++) {
     timer_5.Start();
-    animal_system.Iterate(true);
+    animal_system.Iterate();
     timer_5.CaptureTimePoint(false);
   }
   timer_5.PrintAverageTime();

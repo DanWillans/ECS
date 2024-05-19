@@ -32,7 +32,7 @@ public:
   explicit ComponentArray(ComponentID<T> id) : id_(id)
   {
     // First slot in components_ is reserved
-    // components_.emplace_back(T{}, EntityID(0));
+    components_.emplace_back(T{}, EntityID(0));
   }
   ComponentArray(ComponentArray&&) = default;
   ComponentArray(const ComponentArray&) = default;
@@ -59,45 +59,30 @@ public:
     }
   }
 
-  // void RemoveComponent(EntityID entity_id) override
-  // {
-  //   // Check if entity was even added to this component
-  //   if (entity_index_map_[entity_id.Get()] != 0 && components_.size() - free_slots_.size() != 0) {
-  //     auto& back_component = components_[components_.size() - 1 - free_slots_.size()];
-  //     // Replace removed component with the back of the vector
-  //     components_[entity_index_map_[entity_id.Get()]] = back_component;
-  //     // Push a free slot onto the queue
-  //     auto back_component_index = entity_index_map_[back_component.id.Get()];
-  //     free_slots_.push(back_component_index);
-  //     // Update the index map with the new position
-  //     entity_index_map_[back_component.id.Get()] = entity_index_map_[entity_id.Get()];
-  //   }
-
-  //   // free_slots_.push(entity_index_map_[entity_id.Get()]);
-  // }
-
   void RemoveComponent(EntityID entity_id) override
   {
-    auto entity_it = entity_index_map_.find(entity_id.Get());
-    if (entity_it != entity_index_map_.end()) {
-      // Invalidate the component in the vector.
-      // components_[entity_it->second].dirty = true;
-      free_slots_.push(entity_it->second);
-      // Remove the component from the entity map.
-      entity_index_map_.erase(entity_id.Get());
+    // Check if entity was even added to this component
+    if (entity_index_map_[entity_id.Get()] != 0 && components_.size() - free_slots_.size() != 0) {
+      auto& back_component = components_[components_.size() - 1 - free_slots_.size()];
+      // Replace removed component with the back of the vector
+      components_[entity_index_map_[entity_id.Get()]] = back_component;
+      // Push a free slot onto the queue
+      auto back_component_index = entity_index_map_[back_component.id.Get()];
+      free_slots_.push(back_component_index);
+      // Update the index map with the new position
+      entity_index_map_[back_component.id.Get()] = entity_index_map_[entity_id.Get()];
     }
   }
 
-  // [[nodiscard]] size_t Size() const { return components_.size() - 1 - free_slots_.size(); }
-  [[nodiscard]] size_t Size() const { return components_.size() - free_slots_.size(); }
+
+  [[nodiscard]] size_t Size() const { return components_.size() - 1 - free_slots_.size(); }
 
   T& GetComponent(EntityID entity_id) { return components_[entity_index_map_[entity_id.Get()]].component; }
 
   ~ComponentArray<T>() override = default;
 
 private:
-  std::unordered_map<size_t, size_t> entity_index_map_;
-  // std::array<size_t, MAX_ENTITY_COUNT + 1> entity_index_map_{};
+  std::array<size_t, MAX_ENTITY_COUNT + 1> entity_index_map_{};
   std::vector<ComponentWrapper<T>> components_;
 
   // Track free slots in the components_ vector.

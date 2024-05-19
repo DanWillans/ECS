@@ -21,4 +21,4 @@ Result<EntityID> EntityManager::CreateEntity()
 
 void EntityManager::DestroyEntity(EntityID entity_id) { free_slots_.push(entity_id.Get()); }
 
-uint64_t EntityManager::EntityCount() const { return entity_count_ - free_slots_.size(); }
+uint64_t EntityManager::EntityCount() const { return entity_count_ - 1 - free_slots_.size(); }
