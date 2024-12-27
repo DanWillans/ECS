@@ -202,9 +202,23 @@ public:
    * @brief Operator overload for pointer dereferencing. This is not safe to call unless checking Good() return true
    * before hand.
    *
+   * @return constexpr ResultType A pointer to the ReturnType object.
+   */
+  template<typename T = ResultType>
+  [[nodiscard]] constexpr std::enable_if_t<std::is_pointer_v<T>, ResultType> operator->() noexcept
+  {
+    assertm(!error_state_, "Attempting to dereference a Result when it's in error!");
+    return result_;// NOLINT
+  }
+
+  /**
+   * @brief Operator overload for pointer dereferencing. This is not safe to call unless checking Good() return true
+   * before hand.
+   *
    * @return constexpr ResultType* A pointer to the ReturnType object.
    */
-  [[nodiscard]] constexpr ResultType* operator->() noexcept
+   template<typename T = ResultType>
+  [[nodiscard]] constexpr std::enable_if_t<!std::is_pointer_v<T>, ResultType*> operator->() noexcept
   {
     assertm(!error_state_, "Attempting to retrieve value when Result is in error!");
     return &result_;// NOLINT

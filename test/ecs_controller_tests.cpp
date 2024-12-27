@@ -56,21 +56,21 @@ TEST_CASE("Test ECS Controller")
   auto system_id_3 = ecs.RegisterSystem<System3>(signature_3);
 
   // Now we can use Entity objects to add components for that entity
-  auto err = entity_1->AddComponent(test_comp_id_1, {});
+  auto err = entity_1->AddComponent<TestComponent1>();
   REQUIRE(err);
-  err = entity_1->AddComponent(test_comp_id_2, {});
+  err = entity_1->AddComponent<TestComponent2>();
   REQUIRE(err);
-  err = entity_1->AddComponent(test_comp_id_3, {});
-  REQUIRE(err);
-
-  err = entity_2->AddComponent(test_comp_id_1, {});
-  REQUIRE(err);
-  err = entity_2->AddComponent(test_comp_id_2, {});
+  err = entity_1->AddComponent<TestComponent3>();
   REQUIRE(err);
 
-  err = entity_3->AddComponent(test_comp_id_1, {});
+  err = entity_2->AddComponent<TestComponent1>();
   REQUIRE(err);
-  err = entity_3->AddComponent(test_comp_id_3, {});
+  err = entity_2->AddComponent<TestComponent2>();
+  REQUIRE(err);
+
+  err = entity_3->AddComponent<TestComponent1>();
+  REQUIRE(err);
+  err = entity_3->AddComponent<TestComponent3>();
   REQUIRE(err);
 
   // Check systems have the correct entities
@@ -85,13 +85,13 @@ TEST_CASE("Test ECS Controller")
 
   // Remove components on entities
   printf("blah");
-  err = entity_1->RemoveComponent(test_comp_id_2);
+  err = entity_1->RemoveComponent<TestComponent2>();
   printf("blah");
   REQUIRE(err);
-  err = entity_1->RemoveComponent(test_comp_id_3);
+  err = entity_1->RemoveComponent<TestComponent3>();
   printf("blah");
   REQUIRE(err);
-  err = entity_3->RemoveComponent(test_comp_id_3);
+  err = entity_3->RemoveComponent<TestComponent3>();
   REQUIRE(err);
   printf("blah");
 

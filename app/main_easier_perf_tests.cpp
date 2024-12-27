@@ -156,62 +156,62 @@ public:
   void Iterate4Components()
   {
     for (auto& entity : entities) {
-      auto& animal_component = entity.GetComponent(animal_comp_id_);
-      auto& animal_food_component = entity.GetComponent(animal_food_comp_id_);
-      auto& animal_hair_component = entity.GetComponent(animal_hair_style_comp_id_);
-      auto& animal_habitat_component = entity.GetComponent(animal_habitat_comp_id_);
-      animal_component.cat[0][1] = 1.0;
-      animal_component.dog[2][2] = 1.0;
-      animal_component.fish[3][3] = animal_component.dog[2][2] + 2.0f;
-      animal_food_component.cat_food = 1.0;
-      animal_food_component.dog_food = 2.0;
-      animal_food_component.fish_food = 3.0;
-      animal_hair_component.bald = 1.0;
-      animal_hair_component.curly = 2.0;
-      animal_hair_component.mohawk = 3.0;
-      animal_habitat_component.habitat = 540.0;
+      auto animal_component = entity.GetComponent<Animals>();
+      auto animal_food_component = entity.GetComponent<AnimalFood>();
+      auto animal_hair_component = entity.GetComponent<AnimalHairStyle>();
+      auto animal_habitat_component = entity.GetComponent<AnimalHabitat>();
+      animal_component->cat[0][1] = 1.0;
+      animal_component->dog[2][2] = 1.0;
+      animal_component->fish[3][3] = animal_component->dog[2][2] + 2.0f;
+      animal_food_component->cat_food = 1.0;
+      animal_food_component->dog_food = 2.0;
+      animal_food_component->fish_food = 3.0;
+      animal_hair_component->bald = 1.0;
+      animal_hair_component->curly = 2.0;
+      animal_hair_component->mohawk = 3.0;
+      animal_habitat_component->habitat = 540.0;
     }
   }
 
   void Iterate3Components()
   {
     for (auto& entity : entities) {
-      auto& animal_component = entity.GetComponent(animal_comp_id_);
-      auto& animal_food_component = entity.GetComponent(animal_food_comp_id_);
-      auto& animal_hair_component = entity.GetComponent(animal_hair_style_comp_id_);
-      animal_component.cat[0][1] = 1.0;
-      animal_component.dog[2][2] = 1.0;
-      animal_component.fish[3][3] = animal_component.dog[2][2] + 2.0f;
-      animal_food_component.cat_food = 1.0;
-      animal_food_component.dog_food = 2.0;
-      animal_food_component.fish_food = 3.0;
-      animal_hair_component.bald = 1.0;
-      animal_hair_component.curly = 2.0;
-      animal_hair_component.mohawk = 3.0;
+      auto animal_component = entity.GetComponent<Animals>();
+      auto animal_food_component = entity.GetComponent<AnimalFood>();
+      auto animal_hair_component = entity.GetComponent<AnimalHairStyle>();
+      animal_component->cat[0][1] = 1.0;
+      animal_component->dog[2][2] = 1.0;
+      animal_component->fish[3][3] = animal_component->dog[2][2] + 2.0f;
+      animal_food_component->cat_food = 1.0;
+      animal_food_component->dog_food = 2.0;
+      animal_food_component->fish_food = 3.0;
+      animal_hair_component->bald = 1.0;
+      animal_hair_component->curly = 2.0;
+      animal_hair_component->mohawk = 3.0;
     }
   }
 
   void Iterate2Components()
   {
     for (auto& entity : entities) {
-      auto& animal_component = entity.GetComponent(animal_comp_id_);
-      auto& animal_food_component = entity.GetComponent(animal_food_comp_id_);
-      animal_component.cat[0][1] = 1.0;
-      animal_component.dog[2][2] = 1.0;
-      animal_component.fish[3][3] = animal_component.dog[2][2] + 2.0f;
-      animal_food_component.cat_food = 1.0;
-      animal_food_component.dog_food = 2.0;
-      animal_food_component.fish_food = 3.0;
+      auto animal_component = entity.GetComponent<Animals>();
+      auto animal_food_component = entity.GetComponent<AnimalFood>();
+      animal_component->cat[0][1] = 1.0;
+      animal_component->dog[2][2] = 1.0;
+      animal_component->fish[3][3] = animal_component->dog[2][2] + 2.0f;
+      animal_food_component->cat_food = 1.0;
+      animal_food_component->dog_food = 2.0;
+      animal_food_component->fish_food = 3.0;
     }
   }
 
   void Iterate()
   {
     for (auto& entity : entities) {
-      auto& animal_component = entity.GetComponent(animal_comp_id_);
-      animal_component.cat[0][1] = 1.0;
-      animal_component.dog[2][2] = 1.0;
-      animal_component.fish[3][3] = animal_component.dog[2][2] + 2.0f;
+      auto animal_component = entity.GetComponent<Animals>();
+      animal_component->cat[0][1] = 1.0;
+      animal_component->dog[2][2] = 1.0;
+      animal_component->fish[3][3] = animal_component->dog[2][2] + 2.0f;
     }
   }
 
@@ -268,22 +268,22 @@ int main(int argc, const char** argv)
       printf("%s", entity.Error().Message());
       std::terminate();
     }
-    Error err = entity->AddComponent(animal_component_id);
+    Error err = entity->AddComponent<Animals>();
     if (err.Bad()) {
       printf("%s", err.Message());
       std::terminate();
     }
-    err = entity->AddComponent(animal_food_component_id);
+    err = entity->AddComponent<AnimalFood>();
     if (err.Bad()) {
       printf("%s", err.Message());
       std::terminate();
     }
-    err = entity->AddComponent(animal_habitat_component_id);
+    err = entity->AddComponent<AnimalHabitat>();
     if (err.Bad()) {
       printf("%s", err.Message());
       std::terminate();
     }
-    err = entity->AddComponent(animal_hair_style_comp_id);
+    err = entity->AddComponent<AnimalHairStyle>();
     if (err.Bad()) {
       printf("%s", err.Message());
       std::terminate();
@@ -452,7 +452,7 @@ int main(int argc, const char** argv)
           auto& animal_component = entity->animal_component.value();
           animal_component.cat[0][1] = 1.0;
           animal_component.dog[2][2] = 1.0;
-          animal_component.fish[3][3] = animal_component.dog[2][2] + 2.0;
+          animal_component.fish[3][3] = animal_component.dog[2][2] + 2.0f;
         }
         if (entity->animal_food_component != std::nullopt) {
           auto& animal_food_component = entity->animal_food_component.value();
@@ -477,7 +477,7 @@ int main(int argc, const char** argv)
       auto& animal_food_component = view.get<AnimalFood>(entity);
       animal_component.cat[0][1] = 1.0;
       animal_component.dog[2][2] = 1.0;
-      animal_component.fish[3][3] = animal_component.dog[2][2] + 2.0;
+      animal_component.fish[3][3] = animal_component.dog[2][2] + 2.0f;
       animal_food_component.cat_food = 1.0;
       animal_food_component.dog_food = 2.0;
       animal_food_component.fish_food = 3.0;
@@ -513,7 +513,7 @@ int main(int argc, const char** argv)
           auto& animal_component = entity->animal_component.value();
           animal_component.cat[0][1] = 1.0;
           animal_component.dog[2][2] = 1.0;
-          animal_component.fish[3][3] = animal_component.dog[2][2] + 2.0;
+          animal_component.fish[3][3] = animal_component.dog[2][2] + 2.0f;
         }
         if (entity->animal_food_component != std::nullopt) {
           auto& animal_food_component = entity->animal_food_component.value();
@@ -545,7 +545,7 @@ int main(int argc, const char** argv)
       auto& animal_hair_component = view.get<AnimalHairStyle>(entity);
       animal_component.cat[0][1] = 1.0;
       animal_component.dog[2][2] = 1.0;
-      animal_component.fish[3][3] = animal_component.dog[2][2] + 2.0;
+      animal_component.fish[3][3] = animal_component.dog[2][2] + 2.0f;
       animal_food_component.cat_food = 1.0;
       animal_food_component.dog_food = 2.0;
       animal_food_component.fish_food = 3.0;
@@ -584,7 +584,7 @@ int main(int argc, const char** argv)
           auto& animal_component = entity->animal_component.value();
           animal_component.cat[0][1] = 1.0;
           animal_component.dog[2][2] = 1.0;
-          animal_component.fish[3][3] = animal_component.dog[2][2] + 2.0;
+          animal_component.fish[3][3] = animal_component.dog[2][2] + 2.0f;
         }
         if (entity->animal_food_component != std::nullopt) {
           auto& animal_food_component = entity->animal_food_component.value();
@@ -621,7 +621,7 @@ int main(int argc, const char** argv)
       auto& animal_habitat_component = view.get<AnimalHabitat>(entity);
       animal_component.cat[0][1] = 1.0;
       animal_component.dog[2][2] = 1.0;
-      animal_component.fish[3][3] = animal_component.dog[2][2] + 2.0;
+      animal_component.fish[3][3] = animal_component.dog[2][2] + 2.0f;
       animal_food_component.cat_food = 1.0;
       animal_food_component.dog_food = 2.0;
       animal_food_component.fish_food = 3.0;
