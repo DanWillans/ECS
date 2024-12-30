@@ -155,6 +155,7 @@ public:
 
   void Iterate4Components()
   {
+    auto& entities = GetEntities();
     for (auto& entity : entities) {
       auto animal_component = entity.GetComponent<Animals>();
       auto animal_food_component = entity.GetComponent<AnimalFood>();
@@ -175,6 +176,7 @@ public:
 
   void Iterate3Components()
   {
+    auto& entities = GetEntities();
     for (auto& entity : entities) {
       auto animal_component = entity.GetComponent<Animals>();
       auto animal_food_component = entity.GetComponent<AnimalFood>();
@@ -193,6 +195,7 @@ public:
 
   void Iterate2Components()
   {
+    auto& entities = GetEntities();
     for (auto& entity : entities) {
       auto animal_component = entity.GetComponent<Animals>();
       auto animal_food_component = entity.GetComponent<AnimalFood>();
@@ -207,6 +210,7 @@ public:
 
   void Iterate()
   {
+    auto& entities = GetEntities();
     for (auto& entity : entities) {
       auto animal_component = entity.GetComponent<Animals>();
       animal_component->cat[0][1] = 1.0;
@@ -214,6 +218,8 @@ public:
       animal_component->fish[3][3] = animal_component->dog[2][2] + 2.0f;
     }
   }
+
+  void Update(const float& delta_time) override { std::ignore = delta_time; }
 
 private:
   ComponentID<Animals> animal_comp_id_;

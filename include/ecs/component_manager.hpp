@@ -14,15 +14,25 @@
 #include "ids.hpp"
 #include "result.hpp"
 
-// template<typename ComponentName>
-// using ComponentIterator = std::vector<ComponentName>::iterator;
+namespace internal {
+struct type_index final
+{
+  [[nodiscard]] static uint32_t next() noexcept
+  {
+    static uint32_t value{};
+    return value++;
+  }
+};
+}// namespace internal
 
-struct custom_hash_avalanching {
-    using is_avalanching = void;
-
-    auto operator()(std::type_index const& x) const noexcept -> uint64_t {
-        return ankerl::unordered_dense::detail::wyhash::hash(x.hash_code());
-    }
+template<typename Type, typename = void> struct type_index final
+{
+  static uint32_t value() noexcept
+  {
+    static const uint32_t value = internal::type_index::next();
+    return value;
+  }
+  constexpr operator uint32_t() const noexcept { return value(); }
 };
 
 class ComponentManager
@@ -37,7 +47,8 @@ public:
   template<typename ComponentName> ComponentID<ComponentName> RegisterComponent()
   {
     ComponentID<ComponentName> comp_id(component_index_count_++);
-    components_map_[std::type_index(typeid(ComponentName))] = std::make_unique<ComponentArray<ComponentName>>(comp_id);
+    printf("Component ID: %d", type_index<ComponentName>::value());
+    components_map_[type_index<ComponentName>::value()] = std::make_unique<ComponentArray<ComponentName>>(comp_id);
     return comp_id;
   }
 
@@ -85,7 +96,8 @@ public:
     }
   }
 
-  template<typename ComponentName> Result<ComponentID<ComponentName>> GetComponentID() {
+  template<typename ComponentName> Result<ComponentID<ComponentName>> GetComponentID()
+  {
     auto comp_array = GetComponentArray<ComponentName>();
     if (comp_array.Good()) {
       return comp_array->GetID();
@@ -94,10 +106,31 @@ public:
     }
   }
 
+  template<typename ComponentName>
+  Result<std::vector<ComponentWrapper<ComponentName>>>& GetComponentVector(ComponentID<ComponentName> component_id)
+  {
+    auto comp_array = GetComponentArray<ComponentName>();
+    if (comp_array.Good()) {
+      return comp_array->GetComponentVector();
+    } else {
+      return comp_array.Error();
+    }
+  }
+
+  template<typename ComponentName> bool HasComponent(EntityID identifier, ComponentID<ComponentName> component_id)
+  {
+    auto comp_array = GetComponentArray<ComponentName>();
+    if (comp_array.Good()) {
+      return comp_array->HasComponent();
+    } else {
+      return comp_array.Error();
+    }
+  }
+
 private:
   template<typename ComponentName> Result<ComponentArray<ComponentName>*> GetComponentArray()
   {
-    auto comp_it = components_map_.find(std::type_index(typeid(ComponentName)));
+    auto comp_it = components_map_.find(type_index<ComponentName>::value());
     if (comp_it == components_map_.end()) {
       return Error{ "Component hasn't been registered" };
     }
@@ -106,8 +139,8 @@ private:
   // A count to store how "full" or components_ array is.
   size_t component_index_count_{ 0 };
 
-  // std::unordered_map<std::type_index, std::unique_ptr<IComponentArray>> components_map_;
-  ankerl::unordered_dense::map<std::type_index, std::unique_ptr<IComponentArray>, custom_hash_avalanching> components_map_;
+  std::unordered_map<size_t, std::unique_ptr<IComponentArray>> components_map_;
+  // ankerl::unordered_dense::map<size_t, std::unique_ptr<IComponentArray>> components_map_;
 };
 
 #endif

@@ -15,12 +15,15 @@ TEST_CASE("Test ECS Controller")
   };
   struct System1 : public System
   {
+    void Update(const float& delta_time) override { std::ignore = delta_time; }
   };
   struct System2 : public System
   {
+    void Update(const float& delta_time) override { std::ignore = delta_time; }
   };
   struct System3 : public System
   {
+    void Update(const float& delta_time) override { std::ignore = delta_time; }
   };
   ECSController ecs;
   auto entity_1 = ecs.CreateEntity();
@@ -74,14 +77,14 @@ TEST_CASE("Test ECS Controller")
   REQUIRE(err);
 
   // Check systems have the correct entities
-  const auto& sys_1 = ecs.GetSystem(system_id_1);
-  const auto& sys_2 = ecs.GetSystem(system_id_2);
-  const auto& sys_3 = ecs.GetSystem(system_id_3);
+  auto& sys_1 = ecs.GetSystem(system_id_1);
+  auto& sys_2 = ecs.GetSystem(system_id_2);
+  auto& sys_3 = ecs.GetSystem(system_id_3);
 
   // Check system entity sizes
-  REQUIRE_EQ(sys_1.entities.size(), 2);
-  REQUIRE_EQ(sys_2.entities.size(), 3);
-  REQUIRE_EQ(sys_3.entities.size(), 1);
+  REQUIRE_EQ(sys_1.GetEntities().size(), 2);
+  REQUIRE_EQ(sys_2.GetEntities().size(), 3);
+  REQUIRE_EQ(sys_3.GetEntities().size(), 1);
 
   // Remove components on entities
   printf("blah");
@@ -96,9 +99,9 @@ TEST_CASE("Test ECS Controller")
   printf("blah");
 
   // Check systems have correct entities again
-  REQUIRE_EQ(sys_1.entities.size(), 1);
-  REQUIRE_EQ(sys_2.entities.size(), 3);
-  REQUIRE_EQ(sys_3.entities.size(), 0);
+  REQUIRE_EQ(sys_1.GetEntities().size(), 1);
+  REQUIRE_EQ(sys_2.GetEntities().size(), 3);
+  REQUIRE_EQ(sys_3.GetEntities().size(), 0);
 
   REQUIRE_EQ(ecs.EntityCount(), 3);
 
@@ -108,9 +111,9 @@ TEST_CASE("Test ECS Controller")
   printf("blah");
 
   // Check systems have correct entities again
-  REQUIRE_EQ(sys_1.entities.size(), 1);
-  REQUIRE_EQ(sys_2.entities.size(), 2);
-  REQUIRE_EQ(sys_3.entities.size(), 0);
+  REQUIRE_EQ(sys_1.GetEntities().size(), 1);
+  REQUIRE_EQ(sys_2.GetEntities().size(), 2);
+  REQUIRE_EQ(sys_3.GetEntities().size(), 0);
 
   printf("blah");
   REQUIRE_EQ(ecs.EntityCount(), 2);
@@ -121,9 +124,9 @@ TEST_CASE("Test ECS Controller")
 
   printf("blah");
   // Check systems have correct entities again
-  REQUIRE_EQ(sys_1.entities.size(), 0);
-  REQUIRE_EQ(sys_2.entities.size(), 1);
-  REQUIRE_EQ(sys_3.entities.size(), 0);
+  REQUIRE_EQ(sys_1.GetEntities().size(), 0);
+  REQUIRE_EQ(sys_2.GetEntities().size(), 1);
+  REQUIRE_EQ(sys_3.GetEntities().size(), 0);
 
   REQUIRE_EQ(ecs.EntityCount(), 1);
 
@@ -133,9 +136,9 @@ TEST_CASE("Test ECS Controller")
 
   printf("blah");
   // Check systems have correct entities again
-  REQUIRE_EQ(sys_1.entities.size(), 0);
-  REQUIRE_EQ(sys_2.entities.size(), 0);
-  REQUIRE_EQ(sys_3.entities.size(), 0);
+  REQUIRE_EQ(sys_1.GetEntities().size(), 0);
+  REQUIRE_EQ(sys_2.GetEntities().size(), 0);
+  REQUIRE_EQ(sys_3.GetEntities().size(), 0);
 
   REQUIRE_EQ(ecs.EntityCount(), 0);
 }

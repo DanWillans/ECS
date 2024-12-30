@@ -55,7 +55,7 @@ public:
     return component_manager_->GetComponent<ComponentName>(id_);
   }
 
-  void Destroy()
+  void Destroy() const
   {
     component_manager_->EntityDestroyed(id_);
     system_manager_->EntityDestroyed(id_);
