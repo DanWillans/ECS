@@ -1,26 +1,32 @@
 #include <doctest/doctest.h>
 
-#include "ids.hpp"
 #include "ecs/component_manager.hpp"
 #include "ecs/entity_manager.hpp"
 #include "ecs/system_manager.hpp"
+#include "ids.hpp"
+
 
 TEST_CASE("Test system manager")
 {
   struct System1 : public System
   {
+    void Update(const float& delta_time) override { std::ignore = delta_time; }
   };
   struct System2 : public System
   {
+    void Update(const float& delta_time) override { std::ignore = delta_time; }
   };
   struct System3 : public System
   {
+    void Update(const float& delta_time) override { std::ignore = delta_time; }
   };
   struct System4 : public System
   {
+    void Update(const float& delta_time) override { std::ignore = delta_time; }
   };
   struct System5 : public System
   {
+    void Update(const float& delta_time) override { std::ignore = delta_time; }
   };
   struct TestComponent1
   {
@@ -51,44 +57,34 @@ TEST_CASE("Test system manager")
   auto ent_id_5 = ent_man.CreateEntity();
   REQUIRE(ent_id_5.Good());
 
-
   // Create components
   ComponentManager comp_man;
-  auto comp_id_1 = comp_man.RegisterComponent<TestComponent1>();
-  auto comp_id_2 = comp_man.RegisterComponent<TestComponent2>();
-  auto comp_id_3 = comp_man.RegisterComponent<TestComponent3>();
-  auto comp_id_4 = comp_man.RegisterComponent<TestComponent4>();
-  auto comp_id_5 = comp_man.RegisterComponent<TestComponent5>();
+  REQUIRE(comp_man.RegisterComponent<TestComponent1>());
+  REQUIRE(comp_man.RegisterComponent<TestComponent2>());
+  REQUIRE(comp_man.RegisterComponent<TestComponent3>());
+  REQUIRE(comp_man.RegisterComponent<TestComponent4>());
+  REQUIRE(comp_man.RegisterComponent<TestComponent5>());
 
   // Create systems
   SystemManager sys_man(&comp_man, &ent_man);
   SystemSignature signature_1;
-  signature_1.SetComponent(comp_id_1);
-  signature_1.SetComponent(comp_id_2);
+  signature_1.SetComponent<TestComponent1, TestComponent2>();
   auto sys_id_1 = sys_man.RegisterSystem<System1>(signature_1);
 
   SystemSignature signature_2;
-  signature_2.SetComponent(comp_id_1);
-  signature_2.SetComponent(comp_id_2);
-  signature_2.SetComponent(comp_id_3);
+  signature_2.SetComponent<TestComponent1, TestComponent2, TestComponent3>();
   auto sys_id_2 = sys_man.RegisterSystem<System2>(signature_2);
 
   SystemSignature signature_3;
-  signature_3.SetComponent(comp_id_1);
-  signature_3.SetComponent(comp_id_2);
-  signature_3.SetComponent(comp_id_3);
+  signature_3.SetComponent<TestComponent1, TestComponent2, TestComponent3>();
   auto sys_id_3 = sys_man.RegisterSystem<System3>(signature_3);
 
   SystemSignature signature_4;
-  signature_4.SetComponent(comp_id_1);
+  signature_4.SetComponent<TestComponent1>();
   auto sys_id_4 = sys_man.RegisterSystem<System4>(signature_4);
 
   SystemSignature signature_5;
-  signature_5.SetComponent(comp_id_1);
-  signature_5.SetComponent(comp_id_2);
-  signature_5.SetComponent(comp_id_3);
-  signature_5.SetComponent(comp_id_4);
-  signature_5.SetComponent(comp_id_5);
+  signature_5.SetComponent<TestComponent1, TestComponent2, TestComponent3, TestComponent4, TestComponent5>();
   auto sys_id_5 = sys_man.RegisterSystem<System5>(signature_5);
 
   // Inform system manager about an entity signature
@@ -99,25 +95,25 @@ TEST_CASE("Test system manager")
   sys_man.EntitySignatureChanged(*ent_id_5, signature_1);
 
   // Check Systems have the correct entities
-  const auto& system_1 = sys_man.GetSystem(sys_id_1);
-  REQUIRE_EQ(system_1.entities.size(), 5);
-  const auto& system_2 = sys_man.GetSystem(sys_id_2);
-  REQUIRE_EQ(system_2.entities.size(), 0);
-  const auto& system_3 = sys_man.GetSystem(sys_id_3);
-  REQUIRE_EQ(system_3.entities.size(), 0);
-  const auto& system_4 = sys_man.GetSystem(sys_id_4);
-  REQUIRE_EQ(system_4.entities.size(), 5);
-  const auto& system_5 = sys_man.GetSystem(sys_id_5);
-  REQUIRE_EQ(system_5.entities.size(), 0);
+  auto& system_1 = sys_man.GetSystem(sys_id_1);
+  REQUIRE_EQ(system_1.GetEntities().size(), 5);
+  auto& system_2 = sys_man.GetSystem(sys_id_2);
+  REQUIRE_EQ(system_2.GetEntities().size(), 0);
+  auto& system_3 = sys_man.GetSystem(sys_id_3);
+  REQUIRE_EQ(system_3.GetEntities().size(), 0);
+  auto& system_4 = sys_man.GetSystem(sys_id_4);
+  REQUIRE_EQ(system_4.GetEntities().size(), 5);
+  auto& system_5 = sys_man.GetSystem(sys_id_5);
+  REQUIRE_EQ(system_5.GetEntities().size(), 0);
 
   // Let's change the signature of some entities and recheck the systems
   sys_man.EntitySignatureChanged(*ent_id_1, signature_5);
   sys_man.EntitySignatureChanged(*ent_id_2, signature_4);
 
   // Check Systems have the correct entities
-  REQUIRE_EQ(system_1.entities.size(), 4);
-  REQUIRE_EQ(system_2.entities.size(), 1);
-  REQUIRE_EQ(system_3.entities.size(), 1);
-  REQUIRE_EQ(system_4.entities.size(), 5);
-  REQUIRE_EQ(system_5.entities.size(), 1);
+  REQUIRE_EQ(system_1.GetEntities().size(), 4);
+  REQUIRE_EQ(system_2.GetEntities().size(), 1);
+  REQUIRE_EQ(system_3.GetEntities().size(), 1);
+  REQUIRE_EQ(system_4.GetEntities().size(), 5);
+  REQUIRE_EQ(system_5.GetEntities().size(), 1);
 }

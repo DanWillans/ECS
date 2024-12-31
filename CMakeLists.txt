@@ -11,7 +11,7 @@ enable_testing()
 
 add_subdirectory(vendor/unordered_dense)
 
-add_library(ECS src/entity_manager.cpp src/system_manager.cpp src/component_manager.cpp)
+add_library(ECS src/entity_manager.cpp src/system_manager.cpp src/component_manager.cpp src/system.cpp)
 target_link_libraries(ECS unordered_dense::unordered_dense)
 
 include_directories(vendor)

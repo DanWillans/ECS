@@ -3,6 +3,7 @@
 
 #include <bitset>
 
+#include "ecs/component_manager.hpp"
 #include "ecs/ecs_constants.hpp"
 #include "ids.hpp"
 
@@ -12,7 +13,9 @@ class SystemSignature
 public:
   SystemSignature() = default;
   template<typename T> void SetComponent(ComponentID<T> component_id) { bitset_.set(component_id.Get()); }
+  template<typename... Ts> void SetComponent() { (bitset_.set(type_index<Ts>::value()), ...); }
   template<typename T> void ResetComponent(ComponentID<T> component_id) { bitset_.reset(component_id.Get()); }
+  template<typename... Ts> void ResetComponent() { (bitset_reset(type_index<Ts>::value()), ...); }
   SystemSignature operator&(const SystemSignature& rhs) const { return SystemSignature{ rhs.bitset_ & bitset_ }; }
   bool operator==(const SystemSignature& rhs) const { return rhs.bitset_ == bitset_; }
 

@@ -4,7 +4,9 @@
 #include "ecs/component_manager.hpp"
 #include "ecs/entity.hpp"
 #include "ecs/entity_manager.hpp"
+#include "ecs/system.hpp"
 #include "ecs/system_manager.hpp"
+#include "ecs/system_signature.hpp"
 #include "ids.hpp"
 #include "result.hpp"
 
@@ -29,7 +31,7 @@ public:
     return Entity{ system_manager_.get(), component_manager_.get(), entity_manager_.get(), *entity_id };
   }
 
-  template<typename ComponentName> [[nodiscard]] ComponentID<ComponentName> RegisterComponent()
+  template<typename ComponentName> [[nodiscard]] Error RegisterComponent()
   {
     return component_manager_->RegisterComponent<ComponentName>();
   }

@@ -32,6 +32,10 @@ public:
     SystemID<SystemName> system_id(systems_.size());
     const auto& system = systems_.emplace_back(std::make_unique<SystemName>(args...));
     system->signature = signature;
+    system->component_manager = component_manager_;
+    system->system_manager = this;
+    auto res = system->RegisterSystemSignature(signature);
+    assert(res);
     return system_id;
   }
 

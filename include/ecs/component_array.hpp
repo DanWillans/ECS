@@ -81,6 +81,10 @@ public:
 
   ~ComponentArray<T>() override = default;
 
+  ComponentID<T> GetID() {
+    return id_;
+  }
+
 private:
   std::array<size_t, MAX_ENTITY_COUNT + 1> entity_index_map_{};
   std::vector<ComponentWrapper<T>> components_;
