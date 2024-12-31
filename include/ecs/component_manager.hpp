@@ -1,11 +1,9 @@
 #ifndef INCLUDE_COMPONENT_MANAGER_H_
 #define INCLUDE_COMPONENT_MANAGER_H_
 
-#include <array>
 #include <cstddef>
 #include <memory>
-#include <thread>
-#include <typeindex>
+#include <vector>
 
 #include "ankerl/unordered_dense.h"
 #include "ecs/component_array.hpp"
@@ -44,12 +42,18 @@ public:
 
   // Chose to use ComponentID so that we don't have to do any fancy
   // type resolution with typeid to get the correct IComponentArray.
-  template<typename ComponentName> ComponentID<ComponentName> RegisterComponent()
+  template<typename ComponentName> Error RegisterComponent()
   {
-    ComponentID<ComponentName> comp_id(component_index_count_++);
-    printf("Component ID: %d", type_index<ComponentName>::value());
-    components_map_[type_index<ComponentName>::value()] = std::make_unique<ComponentArray<ComponentName>>(comp_id);
-    return comp_id;
+    Error err = Error::OK();
+    int id = type_index<ComponentName>::value();
+    if (id < MAX_COMPONENT_COUNT) {
+      ComponentID<ComponentName> comp_id(id);
+      components_.emplace_back(std::make_unique<ComponentArray<ComponentName>>(comp_id));
+      component_index_count_ = id;
+    } else {
+      err = Error{ "Maximum components registered exceeded" };
+    }
+    return err;
   }
 
   template<typename ComponentName> Error AddComponent(EntityID entity_id, const ComponentName& comp)
@@ -130,17 +134,16 @@ public:
 private:
   template<typename ComponentName> Result<ComponentArray<ComponentName>*> GetComponentArray()
   {
-    auto comp_it = components_map_.find(type_index<ComponentName>::value());
-    if (comp_it == components_map_.end()) {
+    auto id = type_index<ComponentName>::value();
+    if (id > component_index_count_) {
       return Error{ "Component hasn't been registered" };
     }
-    return static_cast<ComponentArray<ComponentName>*>(comp_it->second.get());
+    return static_cast<ComponentArray<ComponentName>*>(components_[id].get());
   }
   // A count to store how "full" or components_ array is.
   size_t component_index_count_{ 0 };
 
-  std::unordered_map<size_t, std::unique_ptr<IComponentArray>> components_map_;
-  // ankerl::unordered_dense::map<size_t, std::unique_ptr<IComponentArray>> components_map_;
+  std::vector<std::unique_ptr<IComponentArray>> components_;
 };
 
 #endif

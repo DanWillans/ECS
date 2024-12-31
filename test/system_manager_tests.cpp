@@ -57,44 +57,34 @@ TEST_CASE("Test system manager")
   auto ent_id_5 = ent_man.CreateEntity();
   REQUIRE(ent_id_5.Good());
 
-
   // Create components
   ComponentManager comp_man;
-  auto comp_id_1 = comp_man.RegisterComponent<TestComponent1>();
-  auto comp_id_2 = comp_man.RegisterComponent<TestComponent2>();
-  auto comp_id_3 = comp_man.RegisterComponent<TestComponent3>();
-  auto comp_id_4 = comp_man.RegisterComponent<TestComponent4>();
-  auto comp_id_5 = comp_man.RegisterComponent<TestComponent5>();
+  REQUIRE(comp_man.RegisterComponent<TestComponent1>());
+  REQUIRE(comp_man.RegisterComponent<TestComponent2>());
+  REQUIRE(comp_man.RegisterComponent<TestComponent3>());
+  REQUIRE(comp_man.RegisterComponent<TestComponent4>());
+  REQUIRE(comp_man.RegisterComponent<TestComponent5>());
 
   // Create systems
   SystemManager sys_man(&comp_man, &ent_man);
   SystemSignature signature_1;
-  signature_1.SetComponent(comp_id_1);
-  signature_1.SetComponent(comp_id_2);
+  signature_1.SetComponent<TestComponent1, TestComponent2>();
   auto sys_id_1 = sys_man.RegisterSystem<System1>(signature_1);
 
   SystemSignature signature_2;
-  signature_2.SetComponent(comp_id_1);
-  signature_2.SetComponent(comp_id_2);
-  signature_2.SetComponent(comp_id_3);
+  signature_2.SetComponent<TestComponent1, TestComponent2, TestComponent3>();
   auto sys_id_2 = sys_man.RegisterSystem<System2>(signature_2);
 
   SystemSignature signature_3;
-  signature_3.SetComponent(comp_id_1);
-  signature_3.SetComponent(comp_id_2);
-  signature_3.SetComponent(comp_id_3);
+  signature_3.SetComponent<TestComponent1, TestComponent2, TestComponent3>();
   auto sys_id_3 = sys_man.RegisterSystem<System3>(signature_3);
 
   SystemSignature signature_4;
-  signature_4.SetComponent(comp_id_1);
+  signature_4.SetComponent<TestComponent1>();
   auto sys_id_4 = sys_man.RegisterSystem<System4>(signature_4);
 
   SystemSignature signature_5;
-  signature_5.SetComponent(comp_id_1);
-  signature_5.SetComponent(comp_id_2);
-  signature_5.SetComponent(comp_id_3);
-  signature_5.SetComponent(comp_id_4);
-  signature_5.SetComponent(comp_id_5);
+  signature_5.SetComponent<TestComponent1, TestComponent2, TestComponent3, TestComponent4, TestComponent5>();
   auto sys_id_5 = sys_man.RegisterSystem<System5>(signature_5);
 
   // Inform system manager about an entity signature

@@ -2,7 +2,7 @@
 
 void ComponentManager::EntityDestroyed(EntityID entity_id)
 {
-  for (auto& component : components_map_) {
-    component.second->RemoveComponent(entity_id);
+  for (auto& component : components_) {
+    component->RemoveComponent(entity_id);
   }
 }
